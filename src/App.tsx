@@ -23,7 +23,7 @@ export const App: React.FC = () => {
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [filter, setFilter] = useState(FilterTodo.all);
   const [errorMessage, setErrorMessage] = useState('');
-  const [activeTodo, setActiveTodo] = useState(false);
+  const [activeTodoButton, setActiveTodoButton] = useState(false);
 
   useEffect(() => {
     getTodos()
@@ -77,7 +77,7 @@ export const App: React.FC = () => {
   };
 
   const handleChangeAllCompleted = (isActive: boolean) => {
-    setActiveTodo(true);
+    setActiveTodoButton(true);
 
     todos.forEach(todo => {
       changeCompletedTodo(todo.id, { ...todo, completed: isActive })
@@ -96,7 +96,7 @@ export const App: React.FC = () => {
           setErrorMessage('Unable to update a todo');
           setTimeout(() => setErrorMessage(''), 3000);
         })
-        .finally(() => setActiveTodo(false));
+        .finally(() => setActiveTodoButton(false));
     });
   };
 
@@ -117,7 +117,7 @@ export const App: React.FC = () => {
         />
 
         <ListTodo
-          activeTodo={activeTodo}
+          activeTodoButton={activeTodoButton}
           tempTodo={tempTodo}
           todos={filterTodos}
           setTodos={setTodos}

@@ -9,11 +9,18 @@ type Props = {
   tempTodo: Todo | null;
   onDelete: (id: number) => void;
   setErrorMessage: (message: string) => void;
-  activeTodo: boolean;
+  activeTodoButton: boolean;
 };
 
 export const ListTodo: React.FC<Props> = React.memo(
-  ({ todos, setTodos, tempTodo, onDelete, setErrorMessage, activeTodo }) => {
+  ({
+    todos,
+    setTodos,
+    tempTodo,
+    onDelete,
+    setErrorMessage,
+    activeTodoButton,
+  }) => {
     return (
       <section className="todoapp__main" data-cy="TodoList">
         {todos.map(todo => (
@@ -22,7 +29,7 @@ export const ListTodo: React.FC<Props> = React.memo(
             todo={todo}
             onDelete={onDelete}
             setErrorMessage={setErrorMessage}
-            activeTodo={activeTodo}
+            activeTodoButton={activeTodoButton}
             setTodos={setTodos}
           />
         ))}
@@ -33,7 +40,7 @@ export const ListTodo: React.FC<Props> = React.memo(
             todo={tempTodo}
             onDelete={onDelete}
             setErrorMessage={setErrorMessage}
-            activeTodo={activeTodo}
+            activeTodoButton={activeTodoButton}
             setTodos={setTodos}
           />
         )}

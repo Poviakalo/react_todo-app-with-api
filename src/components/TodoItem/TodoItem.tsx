@@ -9,7 +9,7 @@ type Props = {
   setTodos: (callback: (todos: Todo[]) => Todo[]) => void;
   onDelete: (id: number) => void;
   setErrorMessage: (message: string) => void;
-  activeTodo: boolean;
+  activeTodoButton: boolean;
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -17,7 +17,7 @@ export const TodoItem: React.FC<Props> = ({
   setTodos,
   onDelete,
   setErrorMessage,
-  activeTodo,
+  activeTodoButton,
 }) => {
   const [checked, setChecked] = useState(false);
   const [itemEnterDone, setItemEnterDone] = useState(false);
@@ -106,7 +106,7 @@ export const TodoItem: React.FC<Props> = ({
       <div
         data-cy="TodoLoader"
         className={classNames('modal', 'overlay', {
-          'is-active': isLoading || (activeTodo && !checked),
+          'is-active': isLoading || (activeTodoButton && !checked) || id === 0,
         })}
       >
         <div className="modal-background has-background-white-ter" />
