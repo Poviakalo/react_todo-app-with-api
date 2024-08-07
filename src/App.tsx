@@ -126,7 +126,7 @@ export const App: React.FC = () => {
         />
 
         {/* Hide the footer if there are no todos */}
-        {todos.length && (
+        {todos.length !== 0 && (
           <Footer
             todos={todos}
             setTodos={setTodos}
