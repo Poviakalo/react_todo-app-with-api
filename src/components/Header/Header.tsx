@@ -19,15 +19,13 @@ export const Header: React.FC<Props> = ({
   const [query, setQuery] = useState('');
   const [isDisabled, setIsDisabled] = useState(false);
   const textField = useRef<HTMLInputElement>(null);
-  const [activeToggleButton, setActiveToggleButton] = useState(false);
+  // const [activeToggleButton, setActiveToggleButton] = useState(false);
+
+  const activeToggleButton = todos.every(({ completed }) => completed);
 
   useEffect(() => {
     textField.current?.focus();
   }, [isDisabled]);
-
-  useEffect(() => {
-    setActiveToggleButton(todos.every(({ completed }) => completed));
-  }, [todos]);
 
   const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -36,9 +34,11 @@ export const Header: React.FC<Props> = ({
   const onCreateTodo = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const formattedTitle = query.trim();
+
     setIsDisabled(true);
 
-    if (!query.trim()) {
+    if (!formattedTitle) {
       setQuery('');
       setErrorMessage('Title should not be empty');
       textField.current?.focus();
@@ -53,14 +53,14 @@ export const Header: React.FC<Props> = ({
 
     setTempTodo({
       id: 0,
-      title: query.trim(),
+      title: formattedTitle,
       userId: USER_ID,
       completed: false,
     });
 
     createTodo({
       completed: false,
-      title: query.trim(),
+      title: formattedTitle,
       userId: USER_ID,
     })
       .then(() => {
