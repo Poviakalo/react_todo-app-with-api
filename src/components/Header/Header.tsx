@@ -33,14 +33,12 @@ export const Header: React.FC<Props> = ({
     setQuery(event.target.value);
   };
 
-  const handleCreateTodo = (event: React.FormEvent<HTMLFormElement>) => {
+  const onCreateTodo = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const formattedTitle = query.trim();
 
     setIsDisabled(true);
 
-    if (!formattedTitle) {
+    if (!query.trim()) {
       setQuery('');
       setErrorMessage('Title should not be empty');
       textField.current?.focus();
@@ -55,14 +53,14 @@ export const Header: React.FC<Props> = ({
 
     setTempTodo({
       id: 0,
-      title: formattedTitle,
+      title: query.trim(),
       userId: USER_ID,
       completed: false,
     });
 
     createTodo({
       completed: false,
-      title: formattedTitle,
+      title: query.trim(),
       userId: USER_ID,
     })
       .then(() => {
@@ -91,7 +89,7 @@ export const Header: React.FC<Props> = ({
       />
 
       {/* Add a todo on form submit */}
-      <form onSubmit={handleCreateTodo}>
+      <form onSubmit={onCreateTodo}>
         <input
           ref={textField}
           data-cy="NewTodoField"
