@@ -2,6 +2,7 @@
 import React from 'react';
 import { LoadingItem, Todo } from '../../types/Todo';
 import { TodoItem } from '../TodoItem';
+import { TempTodo } from '../TempTodo';
 
 type Props = {
   todos: Todo[];
@@ -34,16 +35,7 @@ export const ListTodo: React.FC<Props> = React.memo(
           />
         ))}
 
-        {tempTodo && (
-          <TodoItem
-            key={tempTodo.id}
-            todo={tempTodo}
-            onDelete={onDelete}
-            setErrorMessage={setErrorMessage}
-            setTodos={setTodos}
-            isLoadingItems={isLoadingItems}
-          />
-        )}
+        {tempTodo && <TempTodo key={tempTodo.id} tempTodo={tempTodo} />}
       </section>
     );
   },
