@@ -26,6 +26,7 @@ export const App: React.FC = () => {
   const [filter, setFilter] = useState(FilterTodo.all);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingItems, setIsLoadingItems] = useState<LoadingItem[]>([]);
+  const [deleteItem, setDeleteItem] = useState(false);
 
   useEffect(() => {
     getTodos()
@@ -42,6 +43,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     setCompletedTodos(todos.filter(todo => todo.completed));
     setIsLoadingItems(loadingList(todos));
+    setDeleteItem(false);
   }, [todos]);
 
   const filterTodos = useMemo(() => {
@@ -130,6 +132,7 @@ export const App: React.FC = () => {
           setTodos={setTodos}
           setErrorMessage={setErrorMessage}
           toggleAll={toggleAll}
+          deleteItem={deleteItem}
         />
 
         <ListTodo
@@ -139,6 +142,7 @@ export const App: React.FC = () => {
           onDelete={onDelete}
           setErrorMessage={setErrorMessage}
           isLoadingItems={isLoadingItems}
+          setDeleteItem={setDeleteItem}
         />
 
         {/* Hide the footer if there are no todos */}

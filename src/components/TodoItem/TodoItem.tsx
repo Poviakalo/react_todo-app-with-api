@@ -10,6 +10,7 @@ type Props = {
   onDelete: (id: number) => void;
   setErrorMessage: (message: string) => void;
   isLoadingItems: LoadingItem[];
+  setDeleteItem: (onDelete: boolean) => void;
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -18,6 +19,7 @@ export const TodoItem: React.FC<Props> = ({
   onDelete,
   setErrorMessage,
   isLoadingItems,
+  setDeleteItem,
 }) => {
   const [checked, setChecked] = useState(false);
   const [itemEnterDone, setItemEnterDone] = useState(false);
@@ -28,13 +30,16 @@ export const TodoItem: React.FC<Props> = ({
   const handleDelete = (idTodo: number) => {
     setIsLoading(true);
     deleteTodo(id)
-      .then(() => onDelete(idTodo))
+      .then(() => {
+        onDelete(idTodo);
+      })
       .catch(() => {
         setErrorMessage('Unable to delete a todo');
         setTimeout(() => setIsLoading(false), 300);
       })
       .finally(() => {
         setTimeout(() => setErrorMessage(''), 3000);
+        setDeleteItem(true);
       });
   };
 

@@ -11,6 +11,7 @@ type Props = {
   onDelete: (id: number) => void;
   setErrorMessage: (message: string) => void;
   isLoadingItems: LoadingItem[];
+  setDeleteItem: (onDelete: boolean) => void;
 };
 
 export const ListTodo: React.FC<Props> = React.memo(
@@ -21,6 +22,7 @@ export const ListTodo: React.FC<Props> = React.memo(
     onDelete,
     setErrorMessage,
     isLoadingItems,
+    setDeleteItem,
   }) => {
     return (
       <section className="todoapp__main" data-cy="TodoList">
@@ -32,6 +34,7 @@ export const ListTodo: React.FC<Props> = React.memo(
             setErrorMessage={setErrorMessage}
             setTodos={setTodos}
             isLoadingItems={isLoadingItems}
+            setDeleteItem={setDeleteItem}
           />
         ))}
 

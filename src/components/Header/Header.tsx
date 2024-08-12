@@ -9,6 +9,7 @@ type Props = {
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   setErrorMessage: (message: string) => void;
   toggleAll: (switcher: boolean) => void;
+  deleteItem: boolean;
 };
 
 export const Header: React.FC<Props> = ({
@@ -17,6 +18,7 @@ export const Header: React.FC<Props> = ({
   setTodos,
   setErrorMessage,
   toggleAll,
+  deleteItem,
 }) => {
   const [title, setTitle] = useState('');
   const [disabledInput, setDisabledInput] = useState(false);
@@ -29,7 +31,11 @@ export const Header: React.FC<Props> = ({
 
   useEffect(() => {
     textField.current?.focus();
-  }, [disabledInput]);
+  }, [disabledInput, deleteItem]);
+
+  useEffect(() => {
+    setDisabledInput(deleteItem);
+  }, [deleteItem]);
 
   const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
