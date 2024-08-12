@@ -37,7 +37,7 @@ export const App: React.FC = () => {
         setErrorMessage('Unable to load todos');
         setTimeout(() => setErrorMessage(''), 3000);
       });
-  }, [tempTodo]);
+  }, []);
 
   useEffect(() => {
     setCompletedTodos(todos.filter(todo => todo.completed));
