@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React from 'react';
-import { Todo } from '../../types/Todo';
+import { LoadingItem, Todo } from '../../types/Todo';
 import { TodoItem } from '../TodoItem';
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
   tempTodo: Todo | null;
   onDelete: (id: number) => void;
   setErrorMessage: (message: string) => void;
-  activeTodoButton: boolean;
+  isLoadingItems: LoadingItem[];
 };
 
 export const ListTodo: React.FC<Props> = React.memo(
@@ -19,7 +19,7 @@ export const ListTodo: React.FC<Props> = React.memo(
     tempTodo,
     onDelete,
     setErrorMessage,
-    activeTodoButton,
+    isLoadingItems,
   }) => {
     return (
       <section className="todoapp__main" data-cy="TodoList">
@@ -29,8 +29,8 @@ export const ListTodo: React.FC<Props> = React.memo(
             todo={todo}
             onDelete={onDelete}
             setErrorMessage={setErrorMessage}
-            activeTodoButton={activeTodoButton}
             setTodos={setTodos}
+            isLoadingItems={isLoadingItems}
           />
         ))}
 
@@ -40,8 +40,8 @@ export const ListTodo: React.FC<Props> = React.memo(
             todo={tempTodo}
             onDelete={onDelete}
             setErrorMessage={setErrorMessage}
-            activeTodoButton={activeTodoButton}
             setTodos={setTodos}
+            isLoadingItems={isLoadingItems}
           />
         )}
       </section>

@@ -10,3 +10,8 @@ export enum FilterTodo {
   active = 'Active',
   completed = 'Completed',
 }
+
+export interface LoadingItem {
+  id: number;
+  isLoading: boolean;
+}

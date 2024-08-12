@@ -1,104 +1,116 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createTodo, USER_ID } from '../../api/todos';
-import { Todo } from '../../types/Todo';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
+import { Todo } from '../../types/Todo';
+import { createTodo, USER_ID } from '../../api/todos';
 
 type Props = {
   todos: Todo[];
   setTempTodo: (todo: Todo | null) => void;
-  setErrorMessage: (errorMessage: string) => void;
-  onTogleAllCompleted: (activeButton: boolean) => void;
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  setErrorMessage: (message: string) => void;
+  toggleAll: (switcher: boolean) => void;
 };
 
 export const Header: React.FC<Props> = ({
   todos,
   setTempTodo,
+  setTodos,
   setErrorMessage,
-  onTogleAllCompleted,
+  toggleAll,
 }) => {
-  const [query, setQuery] = useState('');
-  const [isDisabled, setIsDisabled] = useState(false);
-  const textField = useRef<HTMLInputElement>(null);
-  // const [activeToggleButton, setActiveToggleButton] = useState(false);
+  const [title, setTitle] = useState('');
+  const [disabledInput, setDisabledInput] = useState(false);
 
-  const activeToggleButton = todos.every(({ completed }) => completed);
+  const activeToggleButton = useMemo(() => {
+    return todos.every(({ completed }) => completed);
+  }, [todos]);
+
+  const textField = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     textField.current?.focus();
-  }, [isDisabled]);
+  }, [disabledInput]);
 
-  const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
+  const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
   };
 
-  const onCreateTodo = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const formattedTitle = query.trim();
+    const formattedTitle = title.trim();
 
-    setIsDisabled(true);
+    setDisabledInput(true);
 
     if (!formattedTitle) {
-      setQuery('');
+      setTitle(formattedTitle);
       setErrorMessage('Title should not be empty');
       textField.current?.focus();
 
       setTimeout(() => {
         setErrorMessage('');
-        setIsDisabled(false);
+        setDisabledInput(false);
       }, 3000);
 
       return;
     }
 
     setTempTodo({
-      id: 0,
       title: formattedTitle,
-      userId: USER_ID,
+      id: 0,
       completed: false,
+      userId: USER_ID,
     });
 
     createTodo({
-      completed: false,
       title: formattedTitle,
+      completed: false,
       userId: USER_ID,
     })
-      .then(() => {
-        setQuery('');
+      .then(data => {
+        setTodos(currentTodos => {
+          return [...currentTodos, data];
+        });
+        setTempTodo(null);
+        setTitle('');
       })
       .catch(() => {
         setTempTodo(null);
         setErrorMessage('Unable to add a todo');
         setTimeout(() => setErrorMessage(''), 3000);
+        setTitle(formattedTitle);
+        textField.current?.focus();
       })
       .finally(() => {
-        setIsDisabled(false);
+        setDisabledInput(false);
       });
   };
 
   return (
     <header className="todoapp__header">
       {/* this button should have `active` class only if all todos are completed */}
-      <button
-        type="button"
-        className={classNames('todoapp__toggle-all', {
-          active: activeToggleButton,
-        })}
-        data-cy="ToggleAllButton"
-        onClick={() => onTogleAllCompleted(!activeToggleButton)}
-      />
+      {!todos.length || (
+        <button
+          type="button"
+          className={classNames('todoapp__toggle-all', {
+            active: activeToggleButton,
+          })}
+          data-cy="ToggleAllButton"
+          onClick={() => toggleAll(activeToggleButton)}
+        />
+      )}
 
       {/* Add a todo on form submit */}
-      <form onSubmit={onCreateTodo}>
+      <form onSubmit={handleSubmit}>
         <input
           ref={textField}
           data-cy="NewTodoField"
           type="text"
           className="todoapp__new-todo"
           placeholder="What needs to be done?"
-          value={query}
-          onChange={handleChangeQuery}
-          disabled={isDisabled}
+          value={title}
+          onChange={handleChangeTitle}
+          disabled={disabledInput}
         />
       </form>
     </header>

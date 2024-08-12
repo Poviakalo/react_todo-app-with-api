@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { Todo } from '../../types/Todo';
+import { LoadingItem, Todo } from '../../types/Todo';
 import { changeCompletedTodo, deleteTodo } from '../../api/todos';
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
   setTodos: (callback: (todos: Todo[]) => Todo[]) => void;
   onDelete: (id: number) => void;
   setErrorMessage: (message: string) => void;
-  activeTodoButton: boolean;
+  isLoadingItems: LoadingItem[];
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -17,7 +17,7 @@ export const TodoItem: React.FC<Props> = ({
   setTodos,
   onDelete,
   setErrorMessage,
-  activeTodoButton,
+  isLoadingItems,
 }) => {
   const [checked, setChecked] = useState(false);
   const [itemEnterDone, setItemEnterDone] = useState(false);
@@ -37,6 +37,14 @@ export const TodoItem: React.FC<Props> = ({
         setTimeout(() => setErrorMessage(''), 3000);
       });
   };
+
+  useEffect(() => {
+    isLoadingItems.forEach(loadingItem => {
+      if (id === loadingItem.id) {
+        setIsLoading(loadingItem.isLoading);
+      }
+    });
+  }, [isLoadingItems, id]);
 
   useEffect(() => {
     setChecked(completed);
@@ -106,7 +114,7 @@ export const TodoItem: React.FC<Props> = ({
       <div
         data-cy="TodoLoader"
         className={classNames('modal', 'overlay', {
-          'is-active': isLoading || (activeTodoButton && !checked) || id === 0,
+          'is-active': isLoading || id === 0,
         })}
       >
         <div className="modal-background has-background-white-ter" />

@@ -17,5 +17,5 @@ export const createTodo = (todo: Omit<Todo, 'id'>) => {
 };
 
 export const changeCompletedTodo = (todoId: number, todo: Todo) => {
-  return client.patch(`/todos/${todoId}`, todo);
+  return client.patch<Todo>(`/todos/${todoId}`, todo);
 };
