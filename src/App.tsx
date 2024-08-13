@@ -4,12 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 
 import { UserWarning } from './UserWarning';
-import {
-  changeCompletedTodo,
-  deleteTodo,
-  getTodos,
-  USER_ID,
-} from './api/todos';
+import { changeTodo, deleteTodo, getTodos, USER_ID } from './api/todos';
 
 import { FilterTodo, LoadingItem, Todo } from './types/Todo';
 
@@ -85,17 +80,17 @@ export const App: React.FC = () => {
     todos.forEach(todo => {
       if (todo.completed === activeButton) {
         setIsLoadingItems(currentState => {
-          return [...currentState].map(currentItem => {
+          return currentState.map(currentItem => {
             return todo.id === currentItem.id
               ? { ...currentItem, isLoading: true }
               : currentItem;
           });
         });
 
-        changeCompletedTodo(todo.id, { ...todo, completed: !activeButton })
+        changeTodo(todo.id, { ...todo, completed: !activeButton })
           .then(updatedTodo => {
             setTodos(currentTodos => {
-              return [...currentTodos].map(cuurentTodo => {
+              return currentTodos.map(cuurentTodo => {
                 return updatedTodo.id === cuurentTodo.id
                   ? updatedTodo
                   : cuurentTodo;
@@ -108,7 +103,7 @@ export const App: React.FC = () => {
           })
           .finally(() => {
             setIsLoadingItems(currentState => {
-              return [...currentState].map(currentItem => {
+              return currentState.map(currentItem => {
                 return { ...currentItem, isLoading: false };
               });
             });

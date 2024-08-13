@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { LoadingItem, Todo } from '../../types/Todo';
-import { changeCompletedTodo, deleteTodo } from '../../api/todos';
+import { changeTodo, deleteTodo } from '../../api/todos';
 
 type Props = {
   todo: Todo;
@@ -59,7 +59,7 @@ export const TodoItem: React.FC<Props> = ({
   const handleOnChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsLoading(true);
 
-    changeCompletedTodo(id, {
+    changeTodo(id, {
       ...todo,
       completed: event.target.checked,
     })
