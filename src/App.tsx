@@ -67,7 +67,11 @@ export const App: React.FC = () => {
   }, []);
 
   const handleClearCompleted = () => {
-    completedTodos.forEach(({ id }) => deleteTodo(id));
+    setDeleteItem(true);
+
+    completedTodos.forEach(({ id }) =>
+      deleteTodo(id).finally(() => setDeleteItem(false)),
+    );
 
     setTimeout(() => {
       setTodos(prevState => {
