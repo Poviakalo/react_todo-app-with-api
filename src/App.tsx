@@ -69,20 +69,28 @@ export const App: React.FC = () => {
   const handleClearCompleted = () => {
     setDeleteItem(true);
 
-    completedTodos.forEach(({ id }) =>
-      deleteTodo(id)
-        .catch(() => {
-          setErrorMessage('Unable to delete a todo');
-          setTimeout(() => setErrorMessage(''), 3000);
-        })
-        .finally(() => setDeleteItem(false)),
+    Promise.allSettled(
+      completedTodos.map(({ id }) =>
+        deleteTodo(id)
+          .then(() => {
+            setTimeout(() => {
+              setTodos(prevState => {
+                return prevState.filter(todo => !todo.completed);
+              });
+            }, 300);
+          })
+          .catch(() => {
+            setErrorMessage('Unable to delete a todo');
+            setTimeout(() => setErrorMessage(''), 3000);
+          })
+          .then(() => {
+            setTodos(prevState => {
+              return prevState.filter(todo => !todo.completed);
+            });
+          })
+          .finally(() => setDeleteItem(false)),
+      ),
     );
-
-    setTimeout(() => {
-      setTodos(prevState => {
-        return prevState.filter(todo => !todo.completed);
-      });
-    }, 300);
   };
 
   const toggleAll = (activeButton: boolean) => {
