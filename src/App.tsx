@@ -70,7 +70,12 @@ export const App: React.FC = () => {
     setDeleteItem(true);
 
     completedTodos.forEach(({ id }) =>
-      deleteTodo(id).finally(() => setDeleteItem(false)),
+      deleteTodo(id)
+        .catch(() => {
+          setErrorMessage('Unable to delete a group of completed todo');
+          setTimeout(() => setErrorMessage(''), 3000);
+        })
+        .finally(() => setDeleteItem(false)),
     );
 
     setTimeout(() => {
