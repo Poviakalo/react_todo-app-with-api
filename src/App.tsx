@@ -73,20 +73,13 @@ export const App: React.FC = () => {
       completedTodos.map(({ id }) =>
         deleteTodo(id)
           .then(() => {
-            setTimeout(() => {
-              setTodos(prevState => {
-                return prevState.filter(todo => !todo.completed);
-              });
-            }, 300);
+            setTodos(prevState => {
+              return prevState.filter(todo => todo.id !== id);
+            });
           })
           .catch(() => {
             setErrorMessage('Unable to delete a todo');
             setTimeout(() => setErrorMessage(''), 3000);
-          })
-          .then(() => {
-            setTodos(prevState => {
-              return prevState.filter(todo => !todo.completed);
-            });
           })
           .finally(() => setDeleteItem(false)),
       ),
