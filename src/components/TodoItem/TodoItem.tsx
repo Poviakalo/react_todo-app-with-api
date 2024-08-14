@@ -112,12 +112,14 @@ export const TodoItem: React.FC<Props> = ({
             return prevTodo.id === id ? data : prevTodo;
           });
         });
-      })
-      .catch(() => setErrorMessage('Unable to update a todo'))
-      .finally(() => {
-        setTitleField(formattedTitle);
-        setIsLoading(false);
         setOnEditField(false);
+        setTitleField(formattedTitle);
+      })
+      .catch(() => {
+        setErrorMessage('Unable to update a todo');
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
