@@ -115,6 +115,7 @@ export const TodoItem: React.FC<Props> = ({
       })
       .catch(() => setErrorMessage('Unable to update a todo'))
       .finally(() => {
+        setTitleField(formattedTitle);
         setIsLoading(false);
         setOnEditField(false);
       });
