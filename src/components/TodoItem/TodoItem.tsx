@@ -100,6 +100,10 @@ export const TodoItem: React.FC<Props> = ({
       return handleDelete(id);
     }
 
+    if (formattedTitle === title) {
+      return setOnEditField(false);
+    }
+
     setIsLoading(true);
 
     changeTodo(id, {
