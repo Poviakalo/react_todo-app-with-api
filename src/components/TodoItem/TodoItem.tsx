@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { LoadingItem, Todo } from '../../types/Todo';
 import { changeTodo, deleteTodo } from '../../api/todos';
@@ -21,11 +21,19 @@ export const TodoItem: React.FC<Props> = ({
   isLoadingItems,
   setDeleteItem,
 }) => {
+  const { title, completed, id } = todo;
+
   const [checked, setChecked] = useState(false);
   const [itemEnterDone, setItemEnterDone] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [titleField, setTitleField] = useState(title);
+  const [onEditField, setOnEditField] = useState(false);
 
-  const { title, completed, id } = todo;
+  const textFieldRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    textFieldRef.current?.focus();
+  }, [onEditField]);
 
   const handleDelete = (idTodo: number) => {
     setIsLoading(true);
@@ -83,6 +91,42 @@ export const TodoItem: React.FC<Props> = ({
       .finally(() => setIsLoading(false));
   };
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formattedTitle = titleField.trim();
+
+    if (!formattedTitle) {
+      return handleDelete(id);
+    }
+
+    setIsLoading(true);
+
+    changeTodo(id, {
+      ...todo,
+      title: formattedTitle,
+    })
+      .then(data => {
+        setTodos(prevTodos => {
+          return prevTodos.map(prevTodo => {
+            return prevTodo.id === id ? data : prevTodo;
+          });
+        });
+      })
+      .catch(() => setErrorMessage('Unable to update a todo'))
+      .finally(() => {
+        setIsLoading(false);
+        setOnEditField(false);
+      });
+  };
+
+  const cancelEdit = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (event.key === 'Escape') {
+      setTitleField(title);
+      setOnEditField(false);
+    }
+  };
+
   return (
     <div
       data-cy="Todo"
@@ -101,19 +145,43 @@ export const TodoItem: React.FC<Props> = ({
         />
       </label>
 
-      <span data-cy="TodoTitle" className="todo__title">
-        {title}
-      </span>
+      {!onEditField ? (
+        <span
+          data-cy="TodoTitle"
+          className="todo__title"
+          onDoubleClick={() => setOnEditField(true)}
+        >
+          {titleField}
+        </span>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          onBlur={handleSubmit}
+          onKeyUp={cancelEdit}
+        >
+          <input
+            ref={textFieldRef}
+            data-cy="TodoTitleField"
+            type="text"
+            className="todo__title-field"
+            placeholder="Empty todo will be deleted"
+            value={titleField}
+            onChange={event => setTitleField(event.target.value)}
+          />
+        </form>
+      )}
 
       {/* Remove button appears only on hover */}
-      <button
-        type="button"
-        className="todo__remove"
-        data-cy="TodoDelete"
-        onClick={() => handleDelete(id)}
-      >
-        ×
-      </button>
+      {!onEditField && (
+        <button
+          type="button"
+          className="todo__remove"
+          data-cy="TodoDelete"
+          onClick={() => handleDelete(id)}
+        >
+          ×
+        </button>
+      )}
 
       {/* overlay will cover the todo while it is being deleted or updated */}
       <div
